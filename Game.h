@@ -96,7 +96,7 @@ void Game::check_board(const int row, const int col){
     int counter{1};
     while (curr_check_dir != (dir::LEFT_DOWN + 1) && !over) {
         i = row, j = col;
-        counter = 0;
+        counter = 1;
         while (true) {
             i += r_dir[curr_check_dir];
             j += c_dir[curr_check_dir];
@@ -110,9 +110,6 @@ void Game::check_board(const int row, const int col){
             if (counter == 4) {
                 winner = player;
                 over = 1;
-                cout << "Last Place [" << i << "][" << j << "]\n";
-                int temp;
-                cin >> temp;
             }
         }
         curr_check_dir++;
