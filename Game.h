@@ -7,8 +7,8 @@ const int BOARD_RANK {6};
 const char RED_CHAR{'R'}, BLUE_CHAR{'B'}, EMPTY_CHAR{' '};
 
 enum dir    {LEFT = 0, LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN};
-int r_dir[] {-1      , -1     , 0 , 1       , 1    , 1         , 0   , -1};
-int c_dir[] {0       , -1     , -1, -1      , 0    , 1         , 1   , 1};
+int r_dir[] { 0,       -1,      -1, -1,       0,     1,          1,    1};
+int c_dir[] {-1,       -1,       0,  1,       1,     1,          0,   -1};
 
 
 class Game {
@@ -96,6 +96,7 @@ void Game::check_board(const int row, const int col){
     int counter{1};
     while (curr_check_dir != (dir::LEFT_DOWN + 1) && !over) {
         i = row, j = col;
+        counter = 0;
         while (true) {
             i += r_dir[curr_check_dir];
             j += c_dir[curr_check_dir];
@@ -109,6 +110,9 @@ void Game::check_board(const int row, const int col){
             if (counter == 4) {
                 winner = player;
                 over = 1;
+                cout << "Last Place [" << i << "][" << j << "]\n";
+                int temp;
+                cin >> temp;
             }
         }
         curr_check_dir++;
