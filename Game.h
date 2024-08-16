@@ -13,6 +13,9 @@ int c_dir[] {-1,       -1,       0,  1,       1,     1,          0,   -1};
 
 class Game {
 public:
+    /**
+     * @brief Construct a new Game object that automatically starts.
+     */
     Game() {
         Init();
         do {
@@ -21,8 +24,12 @@ public:
             update_board(i, j);
             check_board(i, j);
         } while(!over);
-
     }
+
+    /**
+     * @brief Initializes the game objects (players' data) by prompting using std::cin.
+     *  first function call in Game() constructor. 
+     */
     void Init() {
         initBoard();
         cout << "First Player Name: ";
@@ -37,20 +44,60 @@ public:
         cout << "[Player 2: " << name2 << " - " << color_name(player2) << "]\n";
         curr_player = player1;
     }
+
+    /**
+     * @brief Prints Game Board with an index-row on the top to help players select columns.
+     */
     void printBoard() const;
 private:
+    /* Game Objects\Attributes */
     char board[BOARD_RANK][BOARD_RANK];
     string name1{""}, name2{""};
     char player1, player2;
     char curr_player {player1};
     char winner{player1};
-    bool over{0};
+    bool over{0}; // game terminator
+
+    /* Game Priv. Functions*/
+
+    /**
+     * @brief initializes the board with EMPTY_CHAR ' '
+     * called by Init() public function
+     */
     void initBoard();
+
+    /**
+     * @brief takes the color char ['R' or 'B'] and returns ["Red" or "Blue"]
+     * @param _color char ['R' or 'B']
+     * @return string -- By Default returns "Blue" if _color char is not in the list
+     */
     string color_name (char _color){
         return "\033[0;" + string(_color == RED_CHAR ? "31mRed" : "34mBlue") + "\033[0m";
     }
-    int validateCol(const int col) const; // returns empty row within this col
+
+    /**
+     * @brief takes a col index and returns the suitable empty cell row index in that column 
+     * 
+     * @param col column index that is required to be checked
+     * @return int (-1 in case of column doesn't exist or column is filled, else returns the suitable empty row index)
+     */
+    int validateCol(const int col) const;
+
+    /**
+     * @brief Main Update function of the game
+     * Takes current player input (col index) and validates it.
+     * and updates the board
+     * @param row passed by ref. to be edited and sent back to check_boad() func.
+     * @param col passed by ref. because the user fills it
+     */
     void update_board(int& row, int& col);
+
+    /**
+     * @brief updates the current state of the game 
+     * 
+     * @param row the last cell row filled by players
+     * @param col the last cell col filled by players
+     */
     void check_board(const int row, const int col);
 };
 
@@ -86,9 +133,6 @@ int Game::validateCol(const int col) const {
     return -1;
 }
 
-
-
-
 void Game::check_board(const int row, const int col){
     int curr_check_dir {dir::LEFT};
     int i{row}, j{col};
@@ -120,7 +164,6 @@ void Game::check_board(const int row, const int col){
         cout << (winner == player1 ? name1 : name2) << "(" << color_name(winner) << ") Won\n";
     }
 }
-
 
 void Game::printBoard() const {
     system("CLS");
