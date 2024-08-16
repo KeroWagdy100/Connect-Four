@@ -7,8 +7,8 @@ const int BOARD_RANK {6};
 const char RED_CHAR{'R'}, BLUE_CHAR{'B'}, EMPTY_CHAR{' '};
 
 enum dir    {LEFT = 0, LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN};
-int r_dir[] {-1      , -1     , 0 , 1       , 1    , 1         , 0   , -1};
-int c_dir[] {0       , -1     , -1, -1      , 0    , 1         , 1   , 1};
+int r_dir[] { 0,       -1,      -1, -1,       0,     1,          1,    1};
+int c_dir[] {-1,       -1,       0,  1,       1,     1,          0,   -1};
 
 
 class Game {
@@ -27,7 +27,7 @@ public:
         initBoard();
         cout << "First Player Name: ";
         Input::stringInput(name1, "N/A");
-        cout << "First Player Color (R for Red, B for Blue): ";
+        cout << "First Player Color (R for \033[0;31mRed\033[0m, B for \033[0;34mBlue\033[0m): ";
         Input::charInput(player1, 'R', 6);
         player2 = player1 == RED_CHAR ? BLUE_CHAR : RED_CHAR;
         cout << "Second Player Name: ";
@@ -47,7 +47,7 @@ private:
     bool over{0};
     void initBoard();
     string color_name (char _color){
-        return (_color == RED_CHAR ? "Red" : "Blue");
+        return "\033[0;" + string(_color == RED_CHAR ? "31mRed" : "34mBlue") + "\033[0m";
     }
     int validateCol(const int col) const; // returns empty row within this col
     void update_board(int& row, int& col);
@@ -96,6 +96,7 @@ void Game::check_board(const int row, const int col){
     int counter{1};
     while (curr_check_dir != (dir::LEFT_DOWN + 1) && !over) {
         i = row, j = col;
+        counter = 1;
         while (true) {
             i += r_dir[curr_check_dir];
             j += c_dir[curr_check_dir];
@@ -127,9 +128,12 @@ void Game::printBoard() const {
         cout << i << " ";
     cout << "\n";
     
+
+    // For coloring (bolded): "\033[1;" + (Blue? "34" : Red? "31") + "TEXT" + "\033[0m"
     for (int i = 0; i < BOARD_RANK; i++) {
         for (int j = 0; j < BOARD_RANK; j++)
-            cout << board[i][j] << "|";
+        cout << "\033[1;" << (board[i][j] == RED_CHAR ? "31m" : "34m") << board[i][j] << "\033[0m|";
+            // cout << board[i][j] << "|";
         cout << "\n";
     }
 }
