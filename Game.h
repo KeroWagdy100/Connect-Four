@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <thread> // for using this_thread::sleep_for
+#include <chrono> // for using chrono::milliseconds
 using namespace std;
 
 const int BOARD_RANK {6};
@@ -42,6 +44,7 @@ public:
 
         cout << "[Player 1: " << name1 << " - " << color_name(player1) << "]\n";
         cout << "[Player 2: " << name2 << " - " << color_name(player2) << "]\n";
+        this_thread::sleep_for(chrono::milliseconds(2000));
         curr_player = player1;
     }
 
@@ -99,6 +102,14 @@ private:
      * @param col the last cell col filled by players
      */
     void check_board(const int row, const int col);
+
+    /**
+     * @brief Simulates the Drop of Red/Blue Token
+     * @param color Color of token ['R', 'B']
+     * @param row the row that token will fall in
+     * @param col the col that token will fall in
+     */
+    void dropToken_Transition(const char color, const int row, const int col);
 };
 
 void Game::update_board(int& row, int& col) {
@@ -112,6 +123,7 @@ void Game::update_board(int& row, int& col) {
             break;
         cout << "Invalid Col, Col " << col << " is not empty, Try again.\n";
     }
+    dropToken_Transition(curr_player, row, col);
     board[row][col] = curr_player;
     curr_player = (curr_player == player1 ? player2 : player1);
 }
@@ -167,6 +179,7 @@ void Game::check_board(const int row, const int col){
 
 void Game::printBoard() const {
     system("CLS");
+    cout << "\t\t";
     for (int i = 0; i < BOARD_RANK; i++)
         cout << i << " ";
     cout << "\n";
@@ -174,9 +187,19 @@ void Game::printBoard() const {
 
     // For coloring (bolded): "\033[1;" + (Blue? "34" : Red? "31") + "TEXT" + "\033[0m"
     for (int i = 0; i < BOARD_RANK; i++) {
+        cout << "\t\t";
         for (int j = 0; j < BOARD_RANK; j++)
         cout << "\033[1;" << (board[i][j] == RED_CHAR ? "31m" : "34m") << board[i][j] << "\033[0m|";
             // cout << board[i][j] << "|";
         cout << "\n";
+    }
+}
+
+void Game::dropToken_Transition(const char color, const int row, const int col) {
+    for (int i = 0; i < row; i++) {
+        board[i][col] = color;
+        printBoard();
+        this_thread::sleep_for(chrono::milliseconds(200));
+        board[i][col] = EMPTY_CHAR;
     }
 }
